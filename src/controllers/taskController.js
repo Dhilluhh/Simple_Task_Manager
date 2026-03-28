@@ -4,7 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 const taskSchema = z.object({
     title: z.string().min(1),
     description: z.string().optional(),
-    status: z.enum(['pending', 'in-progress', 'completed']).optional()
+    status: z.enum(['pending', 'in-progress', 'completed']).optional(),
+    deadline: z.string().optional().nullable()
 });
 
 const getTasks = async (req, res, next) => {
@@ -58,13 +59,13 @@ const createTask = async (req, res, next) => {
             return res.status(400).json({ error: parsed.error.issues });
         }
 
-        const { title, description = '', status = 'pending' } = parsed.data;
+        const { title, description = '', status = 'pending', deadline = null } = parsed.data;
         const taskId = uuidv4();
         const pool = req.app.get('dbPool');
 
         await pool.query(
-            'INSERT INTO tasks (id, title, description, status, user_id) VALUES (?, ?, ?, ?, ?)',
-            [taskId, title, description, status, req.user.id]
+            'INSERT INTO tasks (id, title, description, status, deadline, user_id) VALUES (?, ?, ?, ?, ?, ?)',
+            [taskId, title, description, status, deadline, req.user.id]
         );
 
         const [newTask] = await pool.query('SELECT * FROM tasks WHERE id = ?', [taskId]);
@@ -87,18 +88,24 @@ const updateTask = async (req, res, next) => {
         const parsed = z.object({
             title: z.string().min(1).optional(),
             description: z.string().optional(),
-            status: z.enum(['pending', 'in-progress', 'completed']).optional()
+            status: z.enum(['pending', 'in-progress', 'completed']).optional(),
+            deadline: z.string().optional().nullable()
         }).safeParse(req.body);
 
         if (!parsed.success) {
             return res.status(400).json({ error: parsed.error.issues });
         }
 
-        const { title = existingTask[0].title, description = existingTask[0].description, status = existingTask[0].status } = parsed.data;
+        const { 
+            title = existingTask[0].title, 
+            description = existingTask[0].description, 
+            status = existingTask[0].status,
+            deadline = existingTask[0].deadline !== undefined ? existingTask[0].deadline : null
+        } = parsed.data;
 
         await pool.query(
-            'UPDATE tasks SET title = ?, description = ?, status = ? WHERE id = ? AND user_id = ?',
-            [title, description, status, req.params.id, req.user.id]
+            'UPDATE tasks SET title = ?, description = ?, status = ?, deadline = ? WHERE id = ? AND user_id = ?',
+            [title, description, status, deadline, req.params.id, req.user.id]
         );
 
         const [updatedTask] = await pool.query('SELECT * FROM tasks WHERE id = ?', [req.params.id]);

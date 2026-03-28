@@ -1,6 +1,6 @@
 # Simple Task Manager API Commands
 
-Save the below as `postman_collection.json` or run the cURL commands directly.
+Run the cURL commands directly below or import them into Postman.
 
 ### 1. Register User
 ```bash
@@ -22,7 +22,7 @@ curl -X POST http://localhost:5000/api/auth/login \
 curl -X POST http://localhost:5000/api/tasks \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <YOUR_TOKEN_HERE>" \
--d '{"title":"Buy groceries","description":"Milk, eggs, and bread.","status":"pending"}'
+-d '{"title":"Buy groceries","description":"Milk, eggs, and bread.","status":"pending","deadline":"2026-12-31T23:59:00"}'
 ```
 
 ### 4. Get All Tasks (with pagination support)
@@ -42,7 +42,7 @@ curl -X GET http://localhost:5000/api/tasks/<TASK_ID_HERE> \
 curl -X PUT http://localhost:5000/api/tasks/<TASK_ID_HERE> \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <YOUR_TOKEN_HERE>" \
--d '{"title":"Buy groceries and coffee","status":"completed"}'
+-d '{"title":"Buy groceries and coffee","status":"completed","deadline":"2026-12-31T12:00:00"}'
 ```
 
 ### 7. Delete Task

@@ -145,6 +145,7 @@ document.getElementById('create-task-form').addEventListener('submit', async (e)
     const title = document.getElementById('task-title').value;
     const description = document.getElementById('task-desc').value;
     const status = document.getElementById('task-status').value;
+    const deadline = document.getElementById('task-due-date').value || null;
     const btn = e.target.querySelector('button');
 
     btn.innerText = 'Adding...';
@@ -155,7 +156,7 @@ document.getElementById('create-task-form').addEventListener('submit', async (e)
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ title, description, status })
+            body: JSON.stringify({ title, description, status, deadline })
         });
         if (res.ok) {
             e.target.reset();
@@ -188,6 +189,15 @@ function openUpdateModal(task) {
     document.getElementById('update-task-title').value = task.title;
     document.getElementById('update-task-desc').value = task.description || '';
     document.getElementById('update-task-status').value = task.status;
+    
+    let localDue = '';
+    if (task.deadline) {
+        const d = new Date(task.deadline);
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        localDue = d.toISOString().slice(0,16);
+    }
+    document.getElementById('update-task-due-date').value = localDue;
+    
     updateModal.classList.add('active');
 }
 
@@ -201,6 +211,7 @@ document.getElementById('update-task-form').addEventListener('submit', async (e)
     const title = document.getElementById('update-task-title').value;
     const description = document.getElementById('update-task-desc').value;
     const status = document.getElementById('update-task-status').value;
+    const deadline = document.getElementById('update-task-due-date').value || null;
 
     try {
         await fetch(`${API_URL}/tasks/${id}`, {
@@ -209,7 +220,7 @@ document.getElementById('update-task-form').addEventListener('submit', async (e)
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ title, description, status })
+            body: JSON.stringify({ title, description, status, deadline })
         });
         updateModal.classList.remove('active');
         fetchTasks(currentPage);
@@ -228,6 +239,10 @@ function renderTasks(tasks) {
     }
 
     tasks.forEach(task => {
+        const dueDateHtml = task.deadline ? 
+            `<span class="task-date" style="color:var(--status-pending);">Target: ${new Date(task.deadline).toLocaleString()}</span>` : 
+            `<span class="task-date" style="opacity:0.5;">No Deadline</span>`;
+            
         const card = document.createElement('div');
         card.className = 'task-card';
         card.innerHTML = `
@@ -236,17 +251,17 @@ function renderTasks(tasks) {
                 <div class="task-desc">${task.description || '<i>No description provided.</i>'}</div>
                 <div class="task-meta">
                     <span class="status-badge status-${task.status}">${task.status.replace('-', ' ')}</span>
-                    <span class="task-date">${new Date(task.created_at).toLocaleDateString()}</span>
+                    ${dueDateHtml}
                 </div>
             </div>
             <div class="task-actions">
                 <!-- SVG Edit Icon -->
                 <button class="icon-btn edit-btn" onclick='openUpdateModal(${JSON.stringify(task).replace(/'/g, "&#39;")})'>
-                    ✏️
+                    [ EDIT ]
                 </button>
                 <!-- SVG Delete Icon -->
                 <button class="icon-btn delete-btn" onclick="deleteTask('${task.id}')">
-                    🗑️
+                    [ DEL ]
                 </button>
             </div>
         `;

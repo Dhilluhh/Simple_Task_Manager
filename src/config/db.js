@@ -42,6 +42,7 @@ const initializeDatabase = async () => {
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
                 status ENUM('pending', 'in-progress', 'completed') DEFAULT 'pending',
+                deadline DATETIME,
                 user_id VARCHAR(36) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
