@@ -53,7 +53,7 @@ A robust Task Management REST API built with Node.js, Express, and MySQL. It fea
    Open a browser to `http://localhost:5000` to interact with the frontend UI.
 
 ## API Documentation
-Postman / Curl commands are available in `commands.md`.
+Curl commands are available in `commands.md`.
 
 ## Database Schema
 The database uses two tables: `users` and `tasks`.
