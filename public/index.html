@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexTask | Modern Task Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <main class="app-container">
+        <!-- Auth View -->
+        <section id="auth-view" class="view glass-panel active">
+            <div class="auth-header">
+                <h1>NexTask</h1>
+                <p>Organize your work with elegance.</p>
+            </div>
+            <div class="auth-toggle">
+                <button id="btn-show-login" class="active">Login</button>
+                <button id="btn-show-register">Register</button>
+            </div>
+            
+            <form id="login-form" class="auth-form active">
+                <div class="input-group">
+                    <input type="text" id="login-username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+                <div class="error-msg" id="login-error"></div>
+            </form>
+
+            <form id="register-form" class="auth-form">
+                <div class="input-group">
+                    <input type="text" id="register-username" placeholder="Choose Username" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-password" placeholder="Create Password" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
+                <div class="error-msg" id="register-error"></div>
+            </form>
+        </section>
+
+        <!-- Dashboard View -->
+        <section id="dashboard-view" class="view">
+            <header class="glass-panel main-header">
+                <div>
+                    <h2>Hello, <span id="user-display"></span> 👋</h2>
+                    <p>Here are your tasks for today.</p>
+                </div>
+                <button id="btn-logout" class="btn-secondary">Logout</button>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="create-task-section glass-panel">
+                    <h3>Create New Task</h3>
+                    <form id="create-task-form">
+                        <div class="input-group">
+                            <input type="text" id="task-title" placeholder="Task Title (e.g. Finish API)" required>
+                        </div>
+                        <div class="input-group">
+                            <textarea id="task-desc" placeholder="Details or notes..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <select id="task-status">
+                                <option value="pending">Pending</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary add-btn">+ Add Task</button>
+                    </form>
+                </div>
+
+                <div class="task-list-section glass-panel">
+                    <div class="list-header">
+                        <h3>Your Tasks</h3>
+                        <div class="task-stats" id="task-stats">0 total</div>
+                    </div>
+                    <div id="tasks-container" class="tasks-container">
+                        <!-- Tasks will be injected here -->
+                    </div>
+                    <div class="pagination" id="pagination-controls">
+                        <!-- Pagination controls -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Update Modal -->
+    <div id="update-modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <h3>Update Task</h3>
+            <form id="update-task-form">
+                <input type="hidden" id="update-task-id">
+                <div class="input-group">
+                    <input type="text" id="update-task-title" required>
+                </div>
+                <div class="input-group">
+                    <textarea id="update-task-desc"></textarea>
+                </div>
+                <div class="input-group">
+                    <select id="update-task-status">
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="btn-cancel-update" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
