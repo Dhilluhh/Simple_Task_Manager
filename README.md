@@ -71,3 +71,4 @@ The database uses two tables: `users` and `tasks`.
 - `status` (ENUM: 'pending', 'in-progress', 'completed')
 - `user_id` (VARCHAR 36, Foreign Key -> users.id)
 - `created_at` (TIMESTAMP)
+- `deadline` (TIMESTAMP) 
